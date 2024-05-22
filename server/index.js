@@ -1,4 +1,7 @@
 import express  from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import mongoose from 'mongoose';
 import { URL } from './config.js';
 import cors from "cors"
@@ -13,13 +16,19 @@ app.use(cors())
 //     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //     allowedHeaders : ["Content-type"]
 // }))
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-app.get( '/', ( req, res ) => {
-    res.send( 'Hello World!' );
-})
+
+
+app.use(express.static(path.resolve(__dirname , "./public")));
 
 //  Book Route
 app.use("/books" , bookRoute)
+
+app.get("*" , (req , res)=>{
+    res.sendFile(path.resolve(__dirname , "./public" , "index.html"))
+})
 
 mongoose.connect(URL)
 .then(()=>{
